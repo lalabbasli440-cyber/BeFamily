@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AR Himayədar ailə üzrə consulting xidmətləri</title>
+<style>
+:root{--ink:#16313a;--teal:#0f5c6e;--sky:#e6f1f4;--sun:#f2a93b;--line:#c9dce2;--bg:#f7fbfc;--card:#fff;--err:#b3261e}
+@media (prefers-color-scheme:dark){:root{--ink:#e4eff2;--teal:#6cc3d5;--sky:#14303a;--line:#2b4954;--bg:#0d1d23;--card:#142a32;--err:#ff8a80}}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink);line-height:1.6}
+h1,h2,h3{line-height:1.25;margin:0 0 .5em}
+a{color:var(--teal)}
+button,input,textarea,select{font:inherit}
+:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+.hidden{display:none!important}
+.btn{background:var(--teal);color:#fff;border:0;border-radius:8px;padding:.7em 1.2em;cursor:pointer;font-weight:600}
+.btn.alt{background:transparent;color:var(--teal);border:2px solid var(--teal)}
+@media (prefers-color-scheme:dark){.btn{color:#08181d}}
+/* auth */
+#auth{min-height:100vh;display:grid;place-items:center;padding:1rem}
+.box{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:1.6rem;width:100%;max-width:430px}
+.box h1{font-size:1.3rem;color:var(--teal)}
+label{display:block;font-weight:600;margin:.8em 0 .25em;font-size:.92rem}
+input[type=text],input[type=password],input[type=email],textarea{width:100%;padding:.65em .8em;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)}
+.row{display:flex;align-items:center;gap:.5em;margin:.8em 0;font-size:.92rem}
+.row input{width:auto}.row label{margin:0;font-weight:400}
+.msg{color:var(--err);font-size:.9rem;min-height:1.2em;margin:.5em 0}
+.msg.ok{color:var(--teal)}
+.tabs{display:flex;gap:.5rem;margin-bottom:1rem}
+.tabs button{flex:1}
+.hint{font-size:.82rem;opacity:.75}
+/* consent */
+#consent{position:fixed;inset:0;background:rgba(0,0,0,.55);display:grid;place-items:center;padding:1rem;z-index:50}
+#consent .box{max-width:520px;max-height:90vh;overflow:auto}
+/* app */
+header{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:1rem;padding:.7rem 1rem;background:var(--teal);color:#fff}
+@media (prefers-color-scheme:dark){header{color:#08181d}}
+header strong{font-size:1rem}
+#burger{width:44px;height:44px;border:2px solid currentColor;border-radius:8px;background:transparent;color:inherit;cursor:pointer;display:grid;place-content:center;gap:5px}
+#burger i{display:block;width:22px;height:3px;background:currentColor;border-radius:2px}
+#logout{margin-left:auto;background:transparent;color:inherit;border:1px solid currentColor;border-radius:8px;padding:.4em .8em;cursor:pointer}
+nav{position:fixed;top:0;left:0;bottom:0;width:min(310px,86vw);background:var(--card);border-right:1px solid var(--line);transform:translateX(-100%);transition:transform .25s;z-index:40;padding:1rem;overflow:auto}
+nav.open{transform:none}
+nav h2{font-size:1.05rem;color:var(--teal)}
+nav button{display:block;width:100%;text-align:left;background:none;border:0;border-radius:8px;padding:.75em .8em;color:var(--ink);cursor:pointer}
+nav button:hover,nav button.on{background:var(--sky)}
+nav .sub{padding-left:1.2rem;font-size:.92rem}
+#scrim{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:30}
+main{max-width:900px;margin:0 auto;padding:1.2rem}
+/* home */
+.hero{text-align:center;padding:1rem 0 2rem}
+.hero svg{width:min(420px,90%);height:auto}
+.quote{font-family:Georgia,"Times New Roman",serif;font-size:clamp(1.5rem,4.5vw,2.3rem);font-style:italic;margin:.5rem auto 0;max-width:640px;line-height:1.35}
+.author{margin-top:.5rem;opacity:.8}
+.more{margin-top:2.5rem;padding:.8rem 1.2rem;display:inline-block;background:var(--sky);border-radius:999px;font-weight:600}
+/* sections */
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:1.1rem;margin-bottom:1rem}
+details{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:.8rem 1rem;margin-bottom:.8rem}
+summary{cursor:pointer;font-weight:700}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:.8rem}
+.grid .card{margin:0}
+.grid h3{font-size:1rem;margin-bottom:.2em}
+.grid p{margin:.1em 0;font-size:.92rem}
+/* chat */
+#log{height:340px;overflow:auto;border:1px solid var(--line);border-radius:10px;padding:.8rem;background:var(--bg)}
+.m{max-width:85%;padding:.5em .8em;border-radius:12px;margin:.4rem 0;width:fit-content}
+.m.bot{background:var(--sky)}
+.m.me{background:var(--teal);color:#fff;margin-left:auto}
+@media (prefers-color-scheme:dark){.m.me{color:#08181d}}
+#chatform{display:flex;gap:.5rem;margin-top:.6rem}
+#chatform input{flex:1}
+</style>
+</head>
+<body>
+
+<!-- GİRİŞ / QEYDİYYAT -->
+<section id="auth">
+  <div class="box">
+    <h1>AR Himayədar ailə üzrə consulting xidmətləri</h1>
+    <div class="tabs">
+      <button class="btn" id="tabLogin" type="button">Daxil ol</button>
+      <button class="btn alt" id="tabReg" type="button">Qeydiyyat</button>
+    </div>
+
+    <div id="loginBox">
+      <label for="lUser">E-poçt və ya əlaqə nömrəsi</label>
+      <input type="text" id="lUser" autocomplete="username">
+      <label for="lPass">Şifrə</label>
+      <input type="password" id="lPass" autocomplete="current-password">
+      <div class="row"><input type="checkbox" id="lRemember"><label for="lRemember">Şifrə yadda saxlanılsın</label></div>
+      <div class="msg" id="lMsg" role="alert"></div>
+      <button class="btn" id="lBtn" type="button" style="width:100%">Daxil ol</button>
+      <p style="text-align:center"><a href="#" id="forgot">Şifrəni unutmusunuz?</a></p>
+    </div>
+
+    <div id="forgotBox" class="hidden">
+      <p>E-poçt və ya əlaqə nömrənizi daxil edin. Şifrəni yeniləmək üçün sizə kod göndəriləcək.</p>
+      <label for="fUser">E-poçt və ya əlaqə nömrəsi</label>
+      <input type="text" id="fUser">
+      <div class="msg" id="fMsg" role="alert"></div>
+      <button class="btn" id="fBtn" type="button" style="width:100%">Kod göndər</button>
+      <p style="text-align:center"><a href="#" id="back1">Girişə qayıt</a></p>
+    </div>
+
+    <div id="regBox" class="hidden">
+      <label for="rName">Ad, soyad, ata adı</label>
+      <input type="text" id="rName" autocomplete="name">
+      <label for="rUser">Əlaqə nömrəsi və ya e-poçt</label>
+      <input type="text" id="rUser" autocomplete="username">
+      <label for="rPass">Şifrə</label>
+      <input type="password" id="rPass" autocomplete="new-password">
+      <p class="hint">Ən azı 8 simvol: böyük hərf, kiçik hərf, rəqəm və simvol (məs. !, @, #).</p>
+      <div class="row"><input type="checkbox" id="rRemember"><label for="rRemember">Şifrə yadda saxlanılsın</label></div>
+      <div class="msg" id="rMsg" role="alert"></div>
+      <button class="btn" id="rBtn" type="button" style="width:100%">Qeydiyyatdan keç</button>
+    </div>
+  </div>
+</section>
+
+<!-- MƏXFİLİK ŞƏRTLƏRİ -->
+<div id="consent" class="hidden">
+  <div class="box" role="dialog" aria-modal="true" aria-labelledby="cT">
+    <h1 id="cT">Məxfilik şərtləri</h1>
+    <p>Xidmətdən istifadə zamanı ad, soyad, ata adı, əlaqə məlumatları və müraciətlərinizin məzmunu toplanır. Bu məlumatlar yalnız məsləhət xidmətinin göstərilməsi məqsədilə istifadə olunur, üçüncü tərəflərə ötürülmür və qanunvericiliyə uyğun qorunur.</p>
+    <div class="row"><input type="checkbox" id="cOk"><label for="cOk">Şəxsi məlumatlarıma girişə icazə verirəm. Məxfilik şərtlərini oxudum, razıyam.</label></div>
+    <div class="msg" id="cMsg" role="alert"></div>
+    <button class="btn" id="cBtn" type="button" style="width:100%">Davam et</button>
+  </div>
+</div>
+
+<!-- ƏSAS TƏTBİQ -->
+<div id="app" class="hidden">
+  <header>
+    <button id="burger" type="button" aria-label="Xidmətlər menyusunu aç" aria-expanded="false"><i></i><i></i><i></i></button>
+    <strong>AR Himayədar ailə consulting</strong>
+    <button id="logout" type="button">Çıxış</button>
+  </header>
+
+  <div id="scrim" class="hidden"></div>
+  <nav id="menu" aria-label="Xidmətlər">
+    <h2>Xidmətlər</h2>
+    <button data-go="home">Ana səhifə</button>
+    <button data-go="law">1. Sahə üzrə qanunvericilik</button>
+    <button data-go="consult">2. Onlayn məsləhət formaları</button>
+    <button class="sub" data-go="call">2.1. Zənglə</button>
+    <button class="sub" data-go="write">2.2. Yazılı</button>
+    <button class="sub" data-go="video">2.3. Video</button>
+    <button data-go="about">3. Haqqımızda</button>
+    <button data-go="bot">4. AI bot</button>
+    <button data-go="contact">5. Əlaqə vasitələri</button>
+  </nav>
+
+  <main>
+    <!-- ANA -->
+    <section data-view="home" class="hero">
+      <svg viewBox="0 0 420 260" role="img" aria-label="Valideyn və uşaq əl-ələ tutub">
+        <circle cx="210" cy="120" r="105" fill="var(--sky)"/>
+        <circle cx="330" cy="50" r="22" fill="var(--sun)"/>
+        <!-- valideyn -->
+        <circle cx="160" cy="70" r="24" fill="#d9a77c"/>
+        <path d="M138 62c4-26 40-26 44 0-10-10-34-10-44 0z" fill="#3b2a20"/>
+        <path d="M128 240l8-120c2-16 46-16 48 0l8 120z" fill="var(--teal)"/>
+        <path d="M184 140l34 40" stroke="#d9a77c" stroke-width="10" stroke-linecap="round"/>
+        <!-- uşaq -->
+        <circle cx="255" cy="125" r="19" fill="#e0b48c"/>
+        <path d="M237 118c3-20 33-20 36 0-8-8-28-8-36 0z" fill="#5a3a22"/>
+        <path d="M236 240l5-85c1-12 33-12 34 0l5 85z" fill="var(--sun)"/>
+        <path d="M241 168l-24 12" stroke="#e0b48c" stroke-width="8" stroke-linecap="round"/>
+        <path d="M120 240h180" stroke="var(--line)" stroke-width="3"/>
+      </svg>
+      <p class="quote">“Uşaqlar bizim gələcəyimizdir.”</p>
+      <p class="author">Heydər Əliyev</p>
+      <div class="more">Ətraflı məlumat üçün sol tərəfdəki menyunu açın</div>
+    </section>
+
+    <!-- QANUNVERİCİLİK -->
+    <section data-view="law" class="hidden">
+      <h2>Sahə üzrə qanunvericilik</h2>
+      <p>Himayədar ailə olmaq istəyənlər aşağıdakı qanunlarla tanış ola bilərlər. Tam mətnlər üçün <a href="https://e-qanun.az" target="_blank" rel="noopener">e-qanun.az</a> saytına baxın.</p>
+      <details><summary>Azərbaycan Respublikasının Ailə Məcəlləsi</summary><p>Himayə, qəyyumluq, övladlığa götürmə və valideynlərin hüquq və vəzifələrini tənzimləyir. <!-- Sənəd linkini bura əlavə edin --></p></details>
+      <details><summary>Azərbaycan Respublikasının Cinayət Məcəlləsi</summary><p>Uşaqların hüquqlarının pozulmasına görə məsuliyyəti müəyyən edir. <!-- Sənəd linkini bura əlavə edin --></p></details>
+      <details><summary>“Uşaq hüquqlarının qorunması haqqında” Qanun</summary><p>Uşaqların yaşamaq, təhsil almaq, sağlamlıq və təhlükəsizlik hüquqlarının təminatını əhatə edir. <!-- Sənəd linkini bura əlavə edin --></p></details>
+      <details><summary>Himayədar ailəyə dair normativ-hüquqi aktlar</summary><p>Himayədar ailənin yaradılması qaydası, seçim meyarları, dəstək və nəzarət mexanizmlərini müəyyən edir. <!-- Sənəd linkini bura əlavə edin --></p></details>
+    </section>
+
+    <!-- MƏSLƏHƏT -->
+    <section data-view="consult" class="hidden">
+      <h2>Onlayn məsləhət formaları</h2>
+      <div class="grid">
+        <div class="card"><h3>Zənglə</h3><p>Sosial işçilərimizlə telefonla əlaqə saxlayın.</p><br><button class="btn" data-go="call" type="button">Seç</button></div>
+        <div class="card"><h3>Yazılı</h3><p>Müraciətinizi rəsmi e-poçt ünvanımıza göndərin.</p><br><button class="btn" data-go="write" type="button">Seç</button></div>
+        <div class="card"><h3>Video</h3><p>Sosial işçi ilə video görüş keçirin.</p><br><button class="btn" data-go="video" type="button">Seç</button></div>
+      </div>
+    </section>
+
+    <section data-view="call" class="hidden">
+      <h2>Zənglə məsləhət</h2>
+      <p>Sosial işçilərimizdən birinə zəng edin.</p>
+      <div class="grid worker-list"></div>
+    </section>
+
+    <section data-view="write" class="hidden">
+      <h2>Yazılı müraciət</h2>
+      <div class="card">
+        <p>Müraciətinizi xidmətin rəsmi e-poçt ünvanına yaza bilərsiniz:</p>
+        <p><a href="mailto:info@example.az">info@example.az</a></p>
+        <label for="wSub">Mövzu</label><input type="text" id="wSub">
+        <label for="wTxt">Müraciətin mətni</label><textarea id="wTxt" rows="5"></textarea>
+        <br><br><button class="btn" id="wBtn" type="button">E-poçt proqramında aç</button>
+      </div>
+    </section>
+
+    <section data-view="video" class="hidden">
+      <h2>Video məsləhət</h2>
+      <div class="card" id="vConsent">
+        <p><strong>Səs və görüntü məlumatlarınız qeydə alınır. Razısınızmı?</strong></p>
+        <button class="btn" id="vYes" type="button">Bəli</button>
+        <button class="btn alt" id="vNo" type="button">Xeyr</button>
+        <div class="msg" id="vMsg"></div>
+      </div>
+      <div id="vWorkers" class="hidden">
+        <p>Görüş vaxtı razılaşdırmaq üçün sosial işçilərimizlə əlaqə saxlayın.</p>
+        <div class="grid worker-list"></div>
+      </div>
+    </section>
+
+    <!-- HAQQIMIZDA -->
+    <section data-view="about" class="hidden">
+      <h2>Haqqımızda</h2>
+      <div class="card"><p>Xidmətimiz 2024-cü ildə yaradılıb. Məqsədimiz himayədar ailə olmaq istəyən şəxslərə hüquqi, sosial və psixoloji məsləhət verməkdir.</p></div>
+      <div class="card"><h3>Təsisçilər</h3><p>[Təsisçi 1: Ad Soyad]<br>[Təsisçi 2: Ad Soyad]</p></div>
+      <div class="card"><h3>Nizamnamə</h3><p><a href="#" onclick="alert('Nizamnamə faylının linkini əlavə edin');return false">Nizamnaməmizlə tanış olun</a></p></div>
+      <div class="card"><h3>Əməkdaşlarımız</h3><p>Komandamız sosial işçilər, psixoloq və hüquqşünaslardan ibarətdir. Əməkdaşlarımızın siyahısı üçün “Zənglə” bölməsinə baxın.</p></div>
+      <div class="card"><h3>Göstərdiyimiz xidmətlər</h3><p>Qanunvericilik üzrə məlumat, zəng, yazılı və video məsləhət, AI bot vasitəsilə ilkin məlumat.</p></div>
+    </section>
+
+    <!-- BOT -->
+    <section data-view="bot" class="hidden">
+      <h2>AI bot</h2>
+      <p class="hint">Bot yalnız təməl məlumat verir. Ətraflı məsləhət üçün sosial işçilərimizlə əlaqə saxlayın.</p>
+      <div id="log" aria-live="polite"></div>
+      <form id="chatform"><input type="text" id="chatIn" placeholder="Sualınızı yazın" aria-label="Sualınız"><button class="btn" type="submit">Göndər</button></form>
+    </section>
+
+    <!-- ƏLAQƏ -->
+    <section data-view="contact" class="hidden">
+      <h2>Əlaqə vasitələri</h2>
+      <div class="card"><h3>Rəsmi e-poçt</h3><p><a href="mailto:info@example.az">info@example.az</a></p></div>
+      <div class="card"><h3>Qaynar xətt</h3><p><a href="tel:+994120000000">+994 12 000 00 00</a></p></div>
+    </section>
+  </main>
+</div>
+
+<script>
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const store={
+  get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},
+  set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}},
+  del(k){try{localStorage.removeItem(k)}catch(e){}}
+};
+const PASS_RE=/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/;
+const isMail=v=>/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+const isPhone=v=>/^\+?[0-9\s\-()]{7,15}$/.test(v);
+
+/* 7 sosial işçi (məlumatları öz məlumatlarınızla əvəz edin) */
+const workers=Array.from({length:7},(_,i)=>({name:`[Ad Soyad ${i+1}]`,role:'Sosial işçi',tel:`+994 50 000 00 0${i+1}`}));
+$$('.worker-list').forEach(el=>{
+  el.innerHTML=workers.map(w=>`<div class="card"><h3>${w.name}</h3><p>${w.role}</p><p><a href="tel:${w.tel.replace(/\s/g,'')}">${w.tel}</a></p></div>`).join('');
+});
+
+/* giriş / qeydiyyat tabları */
+function authView(v){
+  ['loginBox','forgotBox','regBox'].forEach(id=>$('#'+id).classList.toggle('hidden',id!==v));
+  $('#tabLogin').className='btn'+(v==='regBox'?' alt':'');
+  $('#tabReg').className='btn'+(v==='regBox'?'':' alt');
+}
+$('#tabLogin').onclick=()=>authView('loginBox');
+$('#tabReg').onclick=()=>authView('regBox');
+$('#forgot').onclick=e=>{e.preventDefault();authView('forgotBox')};
+$('#back1').onclick=e=>{e.preventDefault();authView('loginBox')};
+
+/* yadda saxlanılmış giriş */
+const saved=store.get('remember');
+if(saved){$('#lUser').value=saved.u;$('#lPass').value=saved.p;$('#lRemember').checked=true}
+
+$('#rBtn').onclick=()=>{
+  const name=$('#rName').value.trim(),u=$('#rUser').value.trim(),p=$('#rPass').value,m=$('#rMsg');
+  m.className='msg';
+  if(name.split(/\s+/).length<3) return m.textContent='Ad, soyad və ata adını tam yazın.';
+  if(!isMail(u)&&!isPhone(u)) return m.textContent='Düzgün e-poçt və ya əlaqə nömrəsi daxil edin.';
+  if(!PASS_RE.test(p)) return m.textContent='Şifrə ən azı 8 simvol olmalı, böyük və kiçik hərf, rəqəm və simvol daxil etməlidir.';
+  const users=store.get('users')||{};
+  if(users[u]) return m.textContent='Bu e-poçt və ya nömrə ilə artıq qeydiyyatdan keçilib.';
+  users[u]={name,p};store.set('users',users);
+  if($('#rRemember').checked) store.set('remember',{u,p});
+  m.className='msg ok';m.textContent='Qeydiyyat tamamlandı. İndi daxil ola bilərsiniz.';
+  $('#lUser').value=u;$('#lPass').value=p;
+  setTimeout(()=>authView('loginBox'),900);
+};
+
+$('#lBtn').onclick=()=>{
+  const u=$('#lUser').value.trim(),p=$('#lPass').value,m=$('#lMsg');
+  const users=store.get('users')||{};
+  if(!users[u]||users[u].p!==p) return m.textContent='E-poçt/nömrə və ya şifrə yanlışdır.';
+  m.textContent='';
+  if($('#lRemember').checked) store.set('remember',{u,p}); else store.del('remember');
+  $('#auth').classList.add('hidden');
+  $('#consent').classList.remove('hidden');
+};
+
+$('#fBtn').onclick=()=>{
+  const u=$('#fUser').value.trim(),m=$('#fMsg');
+  if(!isMail(u)&&!isPhone(u)){m.className='msg';return m.textContent='Düzgün e-poçt və ya əlaqə nömrəsi daxil edin.'}
+  m.className='msg ok';m.textContent='Şifrənin yenilənməsi üçün kod göndərildi. (Real göndəriş server tərəfi tələb edir.)';
+};
+
+$('#cBtn').onclick=()=>{
+  if(!$('#cOk').checked) return $('#cMsg').textContent='Davam etmək üçün razılıq xanasını işarələyin.';
+  $('#consent').classList.add('hidden');
+  $('#app').classList.remove('hidden');
+  go('home');
+};
+
+$('#logout').onclick=()=>{
+  $('#app').classList.add('hidden');$('#auth').classList.remove('hidden');
+  $('#cOk').checked=false;closeMenu();
+};
+
+/* menyu */
+function openMenu(){$('#menu').classList.add('open');$('#scrim').classList.remove('hidden');$('#burger').setAttribute('aria-expanded','true')}
+function closeMenu(){$('#menu').classList.remove('open');$('#scrim').classList.add('hidden');$('#burger').setAttribute('aria-expanded','false')}
+$('#burger').onclick=()=>$('#menu').classList.contains('open')?closeMenu():openMenu();
+$('#scrim').onclick=closeMenu;
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeMenu()});
+
+function go(v){
+  $$('[data-view]').forEach(s=>s.classList.toggle('hidden',s.dataset.view!==v));
+  $$('#menu button').forEach(b=>b.classList.toggle('on',b.dataset.go===v));
+  if(v==='video'){$('#vConsent').classList.remove('hidden');$('#vWorkers').classList.add('hidden');$('#vMsg').textContent=''}
+  if(v==='bot'&&!$('#log').children.length) say('Salam! Mən himayədar ailə mövzusunda təməl məlumat verən botam. Məsələn, “şərtlər”, “sənədlər” və ya “əlaqə” yaza bilərsiniz.','bot');
+  closeMenu();scrollTo(0,0);
+}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(b)go(b.dataset.go)});
+
+/* yazılı müraciət */
+$('#wBtn').onclick=()=>{
+  const s=encodeURIComponent($('#wSub').value||'Müraciət'),t=encodeURIComponent($('#wTxt').value);
+  location.href=`mailto:info@example.az?subject=${s}&body=${t}`;
+};
+
+/* video razılıq */
+$('#vYes').onclick=()=>{$('#vConsent').classList.add('hidden');$('#vWorkers').classList.remove('hidden')};
+$('#vNo').onclick=()=>{$('#vMsg').textContent='Video məsləhət üçün razılıq tələb olunur. Zəng və ya yazılı formadan istifadə edə bilərsiniz.'};
+
+/* bot */
+function say(t,who){
+  const d=document.createElement('div');d.className='m '+who;d.textContent=t;
+  $('#log').appendChild(d);$('#log').scrollTop=1e6;
+}
+const KB=[
+  [/şərt|kim ola|tələb|meyar/i,'Himayədar ailə olmaq üçün namizəd ödəniş qabiliyyətli, sağlam və uşağa qayğı göstərməyə hazır olmalıdır. Dəqiq meyarlar üçün sosial işçilərimizlə əlaqə saxlayın.'],
+  [/sənəd|ərizə/i,'Adətən şəxsiyyət vəsiqəsi, sağlamlıq və yaşayış şəraiti barədə arayışlar, ailə tərkibi haqqında məlumat tələb olunur. Siyahını sosial işçilərimiz dəqiqləşdirəcək.'],
+  [/qanun|məcəllə|hüquq/i,'Qanunlarla tanış olmaq üçün menyudan “1. Sahə üzrə qanunvericilik” bölməsinə keçin.'],
+  [/əlaqə|telefon|qaynar|email|e-poçt|poçt/i,'“5. Əlaqə vasitələri” bölməsində rəsmi e-poçt və qaynar xətt göstərilib.'],
+  [/video|zəng|məsləhət/i,'Məsləhəti zəng, yazılı və ya video formada ala bilərsiniz. Menyudakı “2. Onlayn məsləhət formaları” bölməsinə baxın.'],
+  [/salam|hello|hi/i,'Salam! Sizə necə kömək edə bilərəm?']
+];
+$('#chatform').onsubmit=e=>{
+  e.preventDefault();
+  const t=$('#chatIn').value.trim();if(!t)return;
+  say(t,'me');$('#chatIn').value='';
+  const hit=KB.find(k=>k[0].test(t));
+  setTimeout(()=>say(hit?hit[1]:'Bu barədə dəqiq məlumatım yoxdur. Zəhmət olmasa sosial işçilərimizlə əlaqə saxlayın.','bot'),400);
+};
+</script>
+</body>
+</html>
